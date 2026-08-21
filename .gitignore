@@ -1,1 +1,5 @@
+# fuck off PyCharm
+.idea/
+
+# don't leak my secrets :(
 .env
