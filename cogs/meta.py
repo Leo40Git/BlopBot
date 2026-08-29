@@ -1,4 +1,5 @@
 from datetime import datetime
+from encodings.aliases import aliases
 
 import discord
 from discord.ext import commands
@@ -10,11 +11,11 @@ class Meta(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(name='quit', hidden=True)
+    @commands.command(name='quit', aliases=['exit', 'shutdown'], hidden=True)
     @commands.is_owner()
     async def _quit(self, ctx: commands.Context):
         """Quits the bot."""
-        await ctx.reply(':wave:')
+        await ctx.reply('<a:localbotdies:1543287537710403615>')
         await self.bot.close()
 
     @commands.command()
@@ -25,6 +26,68 @@ class Meta(commands.Cog):
         end_time = datetime.now()
         await message.edit(
             content=f'Pong! Latency: {((end_time - start_time).microseconds / 1000) :.2f}ms')
+
+    @commands.group(hidden=True)
+    @commands.is_owner()
+    async def ext(self, ctx: commands.Context):
+        """Manage extensions."""
+        pass
+
+    @ext.command(name='load')
+    async def ext_load(self, ctx: commands.Context, *, package: str):
+        """
+        Loads an extension.
+        """
+        try:
+            self.bot.load_extension(package)
+        except discord.ExtensionError as e:
+            await ctx.reply(f'{e.__class__.__name__}: {e}')
+        else:
+            await ctx.reply(':ok_hand:')
+
+    @ext.command(name='unload')
+    async def ext_unload(self, ctx: commands.Context, *, package: str):
+        """
+        Unloads an extension.
+        """
+        try:
+            self.bot.unload_extension(package)
+        except discord.ExtensionError as e:
+            await ctx.reply(f'{e.__class__.__name__}: {e}')
+        else:
+            await ctx.reply(':ok_hand:')
+
+    @ext.command(name='reload')
+    async def ext_reload(self, ctx: commands.Context, *, package: str):
+        """
+        Reloads an extension.
+        """
+        try:
+            self.bot.reload_extension(package)
+        except discord.ExtensionError as e:
+            await ctx.reply(f'{e.__class__.__name__}: {e}')
+        else:
+            await ctx.reply(':ok_hand:')
+
+    @ext.command(name='reloadall')
+    async def ext_reload_all(self, ctx: commands.Context):
+        """
+        Reloads all extensions.
+        """
+        packages = list(self.bot.extensions.keys())
+        statuses: list[tuple[bool, str]] = []
+
+        for package in packages:
+            try:
+                self.bot.reload_extension(package)
+            except discord.ExtensionError:
+                # TODO log this somewhere
+                statuses.append((False, package))
+            else:
+                statuses.append((True, package))
+
+        await ctx.reply('\n'.join(
+            f'{':white_check_mark:' if status else ':x:'}: `{package}`' for status, package in statuses))
 
 
 def setup(bot: commands.Bot):
