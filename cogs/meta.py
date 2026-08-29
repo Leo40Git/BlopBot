@@ -1,5 +1,4 @@
 from datetime import datetime
-from encodings.aliases import aliases
 
 import discord
 from discord.ext import commands
