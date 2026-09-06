@@ -6,7 +6,8 @@ from discord.ext import commands
 log = logging.getLogger('BlopBot')
 
 initial_extensions = [
-    'cogs.meta'
+    'cogs.meta',
+    'cogs.fun'
 ]
 
 
