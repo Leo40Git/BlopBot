@@ -3,11 +3,13 @@ from datetime import datetime
 import discord
 from discord.ext import commands
 
+from bot import BlopBot
+
 
 class Meta(commands.Cog):
     """Commands relating to Discord or to the bot herself."""
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: BlopBot):
         self.bot = bot
 
     @commands.command(name='quit', aliases=['exit', 'shutdown'], hidden=True)
@@ -21,7 +23,7 @@ class Meta(commands.Cog):
     async def ping(self, ctx: commands.Context):
         """Measures the bot's latency."""
         start_time = datetime.now()
-        message = await ctx.reply('Pong!')
+        message = await ctx.send('Pong!')
         end_time = datetime.now()
         await message.edit(
             content=f'Pong! Latency: {((end_time - start_time).microseconds / 1000) :.2f}ms')
@@ -38,8 +40,8 @@ class Meta(commands.Cog):
         Loads an extension.
         """
         try:
-            self.bot.load_extension(package)
-        except discord.ExtensionError as e:
+            await self.bot.load_extension(package)
+        except commands.ExtensionError as e:
             await ctx.reply(f'{e.__class__.__name__}: {e}')
         else:
             await ctx.reply(':ok_hand:')
@@ -50,8 +52,8 @@ class Meta(commands.Cog):
         Unloads an extension.
         """
         try:
-            self.bot.unload_extension(package)
-        except discord.ExtensionError as e:
+            await self.bot.unload_extension(package)
+        except commands.ExtensionError as e:
             await ctx.reply(f'{e.__class__.__name__}: {e}')
         else:
             await ctx.reply(':ok_hand:')
@@ -62,8 +64,8 @@ class Meta(commands.Cog):
         Reloads an extension.
         """
         try:
-            self.bot.reload_extension(package)
-        except discord.ExtensionError as e:
+            await self.bot.reload_extension(package)
+        except commands.ExtensionError as e:
             await ctx.reply(f'{e.__class__.__name__}: {e}')
         else:
             await ctx.reply(':ok_hand:')
@@ -78,8 +80,8 @@ class Meta(commands.Cog):
 
         for package in packages:
             try:
-                self.bot.reload_extension(package)
-            except discord.ExtensionError:
+                await self.bot.reload_extension(package)
+            except commands.ExtensionError:
                 # TODO log this somewhere
                 statuses.append((False, package))
             else:
@@ -89,5 +91,5 @@ class Meta(commands.Cog):
             f'{':white_check_mark:' if status else ':x:'}: `{package}`' for status, package in statuses))
 
 
-def setup(bot: commands.Bot):
-    bot.add_cog(Meta(bot))
+async def setup(bot: BlopBot):
+    await bot.add_cog(Meta(bot))

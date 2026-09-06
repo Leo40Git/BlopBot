@@ -3,3 +3,6 @@
 
 # don't leak my secrets :(
 .env
+
+# don't leak my logs either
+*.log
