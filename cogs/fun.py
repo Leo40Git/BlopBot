@@ -1,6 +1,7 @@
 import asyncio
 from random import choice, randrange
 
+import discord
 from discord.ext import commands
 
 from bot import BlopBot
@@ -8,6 +9,10 @@ from bot import BlopBot
 
 class Fun(commands.Cog):
     """Various fun commands and games."""
+
+    async def _penis_awe(self, msg: discord.Message):
+        await asyncio.sleep(3)
+        await msg.reply('<:blop:1544849424956792932>')
 
     @commands.command(aliases=['pp', 'gock'])
     async def penis(self, ctx: commands.Context):
@@ -26,11 +31,10 @@ class Fun(commands.Cog):
         s = choice(shaft_chars)
         b = choice(balls_chars)
 
-        await ctx.send(b + (s * length) + h)
+        msg = await ctx.send(b + (s * length) + h)
 
         if length > 7:
-            await asyncio.sleep(1)
-            await ctx.send('<:blop:1544849424956792932>')
+            asyncio.create_task(self._penis_awe(msg))
 
 
 async def setup(bot: BlopBot):
