@@ -69,6 +69,8 @@ class BlopBot(commands.Bot):
             await ctx.author.send('This command cannot be used in private messages.')
         elif isinstance(error, commands.DisabledCommand):
             await ctx.author.send('Sorry, this command is disabled and cannot be used.')
+        elif isinstance(error, commands.CommandNotFound):
+            await ctx.send('I don\'t know this command...')
         elif isinstance(error, commands.CommandInvokeError):
             original = error.original
             if not isinstance(original, discord.HTTPException):
