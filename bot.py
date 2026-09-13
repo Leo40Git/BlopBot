@@ -73,7 +73,7 @@ class BlopBot(commands.Bot):
             original = error.original
             if not isinstance(original, discord.HTTPException):
                 log.exception("In '%s':", ctx.command.qualified_name, exc_info=original)
-        elif isinstance(error, commands.ArgumentParsingError):
+        elif isinstance(error, commands.UserInputError):
             await ctx.send(str(error))
 
     async def get_context(
