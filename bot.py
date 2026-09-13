@@ -1,9 +1,12 @@
 import logging
+from typing import Union
 
 import discord
 from discord.ext import commands
 from pymongo import AsyncMongoClient
 from pymongo.asynchronous.database import AsyncDatabase
+
+from utils.context import Context
 
 log = logging.getLogger('BlopBot')
 
@@ -72,3 +75,12 @@ class BlopBot(commands.Bot):
                 log.exception("In '%s':", ctx.command.qualified_name, exc_info=original)
         elif isinstance(error, commands.ArgumentParsingError):
             await ctx.send(str(error))
+
+    async def get_context(
+        self,
+        origin: Union[discord.Message, discord.Interaction],
+        /,
+        *,
+        cls=Context,
+    ) -> Context:
+        return await super().get_context(origin, cls=cls)

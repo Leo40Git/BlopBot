@@ -5,6 +5,7 @@ import discord
 from discord.ext import commands
 
 from bot import BlopBot
+from utils.context import Context
 
 
 class Fun(commands.Cog):
@@ -15,7 +16,7 @@ class Fun(commands.Cog):
         await msg.reply('<:blop:1544849424956792932>')
 
     @commands.command(aliases=['pp', 'gock'])
-    async def penis(self, ctx: commands.Context):
+    async def penis(self, ctx: Context):
         """Generates an ASCII penis with a random length for you."""
         # TODO seed this for every user
         # TODO rotate seed every 12 hours (5:30am, 5:30pm)
