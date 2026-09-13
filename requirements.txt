@@ -1,2 +1,8 @@
-python-dotenv==1.2.3
-discord.py==2.7.1
+# loading a few things (mostly just the bot token) from .env file
+python-dotenv>=1.2.3
+
+# need a Discord library to make a Discord bot
+discord.py[speed]>=2.7.1
+
+# database driver
+pymongo>=4.18.1
