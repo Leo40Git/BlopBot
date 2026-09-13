@@ -6,3 +6,6 @@ discord.py[speed]>=2.7.1
 
 # database driver
 pymongo>=4.18.1
+
+# timezone data
+tzdata
