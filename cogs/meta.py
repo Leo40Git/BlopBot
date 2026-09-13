@@ -39,9 +39,9 @@ class Meta(commands.Cog):
         try:
             await ctx.bot.load_extension(package)
         except commands.ExtensionError as e:
-            await ctx.reply(f'{e.__class__.__name__}: {e}')
+            await ctx.send(f'{e.__class__.__name__}: {e}')
         else:
-            await ctx.reply(':ok_hand:')
+            await ctx.send(':ok_hand:')
 
     @ext.command(name='unload')
     async def ext_unload(self, ctx: Context, *, package: str):
@@ -51,9 +51,9 @@ class Meta(commands.Cog):
         try:
             await ctx.bot.unload_extension(package)
         except commands.ExtensionError as e:
-            await ctx.reply(f'{e.__class__.__name__}: {e}')
+            await ctx.send(f'{e.__class__.__name__}: {e}')
         else:
-            await ctx.reply(':ok_hand:')
+            await ctx.send(':ok_hand:')
 
     @ext.command(name='reload')
     async def ext_reload(self, ctx: Context, *, package: str):
@@ -63,9 +63,9 @@ class Meta(commands.Cog):
         try:
             await ctx.bot.reload_extension(package)
         except commands.ExtensionError as e:
-            await ctx.reply(f'{e.__class__.__name__}: {e}')
+            await ctx.send(f'{e.__class__.__name__}: {e}')
         else:
-            await ctx.reply(':ok_hand:')
+            await ctx.send(':ok_hand:')
 
     @ext.command(name='reloadall')
     async def ext_reload_all(self, ctx: Context):
@@ -84,8 +84,9 @@ class Meta(commands.Cog):
             else:
                 statuses.append((True, package))
 
-        await ctx.reply('\n'.join(
-            f'{':white_check_mark:' if status else ':x:'}: `{package}`' for status, package in statuses))
+        await ctx.send('\n'.join(
+            f'{':white_check_mark:' if status else ':x:'}: `{package}`'
+            for status, package in statuses))
 
 
 async def setup(bot: BlopBot):
