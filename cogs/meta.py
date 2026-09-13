@@ -89,4 +89,4 @@ class Meta(commands.Cog):
 
 
 async def setup(bot: BlopBot):
-    await bot.add_cog()
+    await bot.add_cog(Meta())

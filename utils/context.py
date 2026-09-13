@@ -7,7 +7,9 @@ if TYPE_CHECKING:
     from bot import BlopBot
 
 
-class Context(commands.Context[BlopBot]):
+class Context(commands.Context):
+    bot: BlopBot
+
     @property
     def db(self) -> AsyncDatabase:
         return self.bot.db
