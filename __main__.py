@@ -5,6 +5,7 @@ from logging.handlers import RotatingFileHandler
 
 import discord
 from dotenv import dotenv_values
+from pymongo import AsyncMongoClient
 
 from bot import BlopBot
 
@@ -50,8 +51,20 @@ def setup_logging():
 async def run_bot():
     config = dotenv_values(".env")
 
-    async with BlopBot() as bot:
-        await bot.start(config['TOKEN'], reconnect=True)
+    log = logging.getLogger()
+
+    try:
+        db_client = AsyncMongoClient(config['MONGO_URI'])
+        await db_client.aconnect()
+    except Exception as e:
+        log.exception('Could not set up MongoDB client, exiting',
+                      exc_info=e)
+        return
+
+    async with db_client:
+        async with BlopBot() as bot:
+            bot.db_client = db_client
+            await bot.start(config['TOKEN'], reconnect=True)
 
 
 if __name__ == '__main__':

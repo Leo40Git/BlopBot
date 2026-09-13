@@ -2,6 +2,8 @@ import logging
 
 import discord
 from discord.ext import commands
+from pymongo import AsyncMongoClient
+from pymongo.asynchronous.database import AsyncDatabase
 
 log = logging.getLogger('BlopBot')
 
@@ -18,6 +20,7 @@ def _prefix_callable(bot: BlopBot, msg: discord.Message):
 
 class BlopBot(commands.Bot):
     bot_app_info: discord.AppInfo
+    db_client: AsyncMongoClient
 
     def __init__(self):
         allowed_mentions = discord.AllowedMentions(roles=False, everyone=False, users=True)
@@ -53,6 +56,10 @@ class BlopBot(commands.Bot):
     @property
     def owner(self) -> discord.User:
         return self.bot_app_info.owner
+
+    @property
+    def db(self) -> AsyncDatabase:
+        return self.db_client.get_default_database()
 
     async def on_command_error(self, ctx: commands.Context, error: commands.CommandError) -> None:
         if isinstance(error, commands.NoPrivateMessage):
