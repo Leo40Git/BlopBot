@@ -31,6 +31,10 @@ class Time(commands.Cog):
         # TODO
         await ctx.send(f'UH HELLO????? {tz}')
 
+        entity = await ctx.read_user_entity(ctx.author)
+        entity['tz_key'] = tz.key
+        await ctx.update_user_entity(entity)
+
 
 async def setup(bot: BlopBot):
     await bot.add_cog(Time())
