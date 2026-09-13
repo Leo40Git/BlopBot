@@ -1,7 +1,10 @@
+from typing import TYPE_CHECKING
+
 from discord.ext import commands
 from pymongo.asynchronous.database import AsyncDatabase
 
-from bot import BlopBot
+if TYPE_CHECKING:
+    from bot import BlopBot
 
 
 class Context(commands.Context[BlopBot]):
