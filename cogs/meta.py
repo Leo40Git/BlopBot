@@ -88,6 +88,17 @@ class Meta(commands.Cog):
             f'{':white_check_mark:' if status else ':x:'}: `{package}`'
             for status, package in statuses))
 
+    @commands.command()
+    async def synctree(self, ctx: Context):
+        """
+        Resynchronizes the application command tree.
+        """
+
+        async with ctx.typing():
+            await ctx.bot.tree.sync()
+
+        await ctx.send(':ok_hand:')
+
 
 async def setup(bot: BlopBot):
     await bot.add_cog(Meta())
