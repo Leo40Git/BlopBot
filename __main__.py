@@ -8,6 +8,7 @@ from dotenv import dotenv_values
 from pymongo import AsyncMongoClient
 
 from bot import BlopBot
+from utils.database import DatabaseHelper
 
 
 class RemoveNoise(logging.Filter):
@@ -54,16 +55,16 @@ async def run_bot():
     log = logging.getLogger()
 
     try:
-        db_client = AsyncMongoClient(config['MONGO_URI'])
-        await db_client.aconnect()
+        client = AsyncMongoClient(config['MONGO_URI'])
+        await client.aconnect()
     except Exception as e:
         log.exception('Could not set up MongoDB client, exiting',
                       exc_info=e)
         return
 
-    async with db_client:
+    async with client:
         async with BlopBot() as bot:
-            bot.db_client = db_client
+            bot.db = DatabaseHelper(client)
             await bot.start(config['TOKEN'], reconnect=True)
 
 

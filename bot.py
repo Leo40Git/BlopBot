@@ -3,10 +3,9 @@ from typing import Union
 
 import discord
 from discord.ext import commands
-from pymongo import AsyncMongoClient
-from pymongo.asynchronous.database import AsyncDatabase
 
 from utils.context import Context
+from utils.database import DatabaseHelper
 
 log = logging.getLogger('BlopBot')
 
@@ -24,7 +23,7 @@ def _prefix_callable(bot: BlopBot, msg: discord.Message):
 
 class BlopBot(commands.Bot):
     bot_app_info: discord.AppInfo
-    db_client: AsyncMongoClient
+    _db: DatabaseHelper
 
     def __init__(self):
         allowed_mentions = discord.AllowedMentions(roles=False, everyone=False, users=True)
@@ -62,8 +61,16 @@ class BlopBot(commands.Bot):
         return self.bot_app_info.owner
 
     @property
-    def db(self) -> AsyncDatabase:
-        return self.db_client.get_default_database()
+    def db(self) -> DatabaseHelper:
+        return self._db
+
+    @db.setter
+    def db(self, db: DatabaseHelper):
+        if self._db is not None:
+            raise RuntimeError('db can only be set once')
+
+        # noinspection unreachable-code
+        self._db = db
 
     async def on_command_error(self, ctx: commands.Context, error: commands.CommandError) -> None:
         if isinstance(error, commands.NoPrivateMessage):

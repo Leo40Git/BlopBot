@@ -1,15 +1,13 @@
 from datetime import datetime
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-from discord import User, Member, AllowedMentions, app_commands, Interaction, AppCommandType
+from discord import User, Member, AllowedMentions, app_commands
 from discord.ext import commands
 from discord.ext.commands import Author
-from pymongo.asynchronous.collection import AsyncCollection
 
 from bot import BlopBot
-from utils.context import Context
+from utils.context import Interaction, Context
 from utils.converters import ZoneInfoConverter
-from utils.database import UserSettings
 
 
 class Time(commands.Cog):
@@ -50,9 +48,9 @@ class Time(commands.Cog):
             The timezone to change to.
         """
 
-        settings = await ctx.get_user_settings(ctx.author)
+        settings = await ctx.bot.db.get_user_settings(ctx.author)
         settings['tz_key'] = tz.key
-        await ctx.set_user_settings(settings)
+        await ctx.bot.db.set_user_settings(settings)
 
         # TODO better timezone name?
         await ctx.send(f'Your timezone has been set to `{tz}`.')
@@ -74,7 +72,7 @@ class Time(commands.Cog):
 
         """
 
-        settings = await ctx.get_user_settings(target)
+        settings = await ctx.bot.db.get_user_settings(target)
         tz_key = settings.get('tz_key')
 
         if tz_key is None:
@@ -97,21 +95,16 @@ class Time(commands.Cog):
     async def time_context_menu_callback(
             self,
             interaction: Interaction,
-            user: Member | User
+            target: Member | User
     ):
-        # no Context, so...
-        c: AsyncCollection[UserSettings] = self.bot.db['user-settings']
-        settings = await c.find_one({'_id': user.id})
-        if settings is None:
-            settings = UserSettings(_id=user.id)
-
+        settings = await interaction.client.db.get_user_settings(target)
         tz_key = settings.get('tz_key')
 
         # this is... very much reachable? pycharmpls
         # noinspection unreachable-code
         if tz_key is None:
             await interaction.response.send_message(
-                f'{user.mention} has not specified their timezone. '
+                f'{target.mention} has not specified their timezone. '
                 f'This can be done with the !settimezone command.',
                 ephemeral=True)
             return
@@ -125,7 +118,7 @@ class Time(commands.Cog):
 
         now = datetime.now(tz)
         await interaction.response.send_message(
-            f'It is currently {now.strftime('%H:%M')} for {user.mention}.',
+            f'It is currently {now.strftime('%H:%M')} for {target.mention}.',
             ephemeral=True)
 
 
