@@ -1,8 +1,6 @@
-from typing import TypedDict
-
-from discord.abc import Snowflake
+from typing import TypedDict, Required, ReadOnly
 
 
-class UserEntity(TypedDict):
-    owner: Snowflake
-    tz_key: str | None
+class UserSettings(TypedDict, total=False):
+    _id: Required[ReadOnly[int]]
+    tz_key: str
