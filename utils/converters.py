@@ -1,5 +1,4 @@
-import zoneinfo
-from zoneinfo import ZoneInfo
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from discord.ext import commands
 
@@ -8,7 +7,7 @@ class ZoneInfoConverter(commands.Converter[ZoneInfo]):
     async def convert(self, ctx: commands.Context, argument: str) -> ZoneInfo:
         try:
             return ZoneInfo(argument)
-        except ValueError, zoneinfo.ZoneInfoNotFoundError:
+        except ValueError, ZoneInfoNotFoundError:
             raise BadZoneInfoArgument(argument)
 
 
