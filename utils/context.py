@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 type Interaction = discord.Interaction[BlopBot]
 
 
-class Context(commands.Context[BlopBot]):
+class Context(commands.Context['BlopBot']):
     @property
     def db(self) -> DatabaseHelper:
         return self.bot.db

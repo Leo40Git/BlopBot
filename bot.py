@@ -23,7 +23,7 @@ def _prefix_callable(bot: BlopBot, msg: discord.Message):
 
 class BlopBot(commands.Bot):
     bot_app_info: discord.AppInfo
-    _db: DatabaseHelper
+    _db: DatabaseHelper | None
 
     def __init__(self):
         allowed_mentions = discord.AllowedMentions(roles=False, everyone=False, users=True)
@@ -44,7 +44,12 @@ class BlopBot(commands.Bot):
             intents=_intents
         )
 
+        self._db = None
+
     async def setup_hook(self) -> None:
+        if self._db is None:
+            raise RuntimeError('db was not set')
+
         self.bot_app_info = await self.application_info()
         self.owner_id = self.bot_app_info.owner.id
 
@@ -62,6 +67,9 @@ class BlopBot(commands.Bot):
 
     @property
     def db(self) -> DatabaseHelper:
+        if self._db is None:
+            raise RuntimeError('db was not set')
+
         return self._db
 
     @db.setter
@@ -69,7 +77,6 @@ class BlopBot(commands.Bot):
         if self._db is not None:
             raise RuntimeError('db can only be set once')
 
-        # noinspection unreachable-code
         self._db = db
 
     async def on_command_error(self, ctx: commands.Context, error: commands.CommandError) -> None:
