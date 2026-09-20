@@ -8,7 +8,7 @@ class Reminder(commands.Cog):
     """Commands relating to reminders."""
 
     @commands.command(aliases=['remind', 'remindme'])
-    def reminder(
+    async def reminder(
             self,
             ctx: Context
     ):
