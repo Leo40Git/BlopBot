@@ -7,7 +7,7 @@ from discord.ext.commands import Author
 
 from bot import BlopBot
 from utils.context import Interaction, Context
-from utils.converters import ZoneInfoConverter
+from utils.converters import TimeZoneKeyConverter
 
 
 class Time(commands.Cog):
@@ -35,7 +35,7 @@ class Time(commands.Cog):
     async def settimezone(
             self,
             ctx: Context,
-            tz: ZoneInfo = commands.parameter(converter=ZoneInfoConverter)):
+            tz: str = commands.parameter(converter=TimeZoneKeyConverter)):
         """
         Sets your timezone.
 
@@ -50,7 +50,7 @@ class Time(commands.Cog):
         """
 
         settings = await ctx.bot.db.get_user_settings(ctx.author)
-        settings['tz_key'] = tz.key
+        settings['tz_key'] = tz
         await ctx.bot.db.save_user_settings(settings)
 
         # TODO better timezone name?
