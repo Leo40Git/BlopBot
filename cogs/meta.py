@@ -25,14 +25,14 @@ class Meta(commands.Cog):
         await message.edit(
             content=f'Pong! Latency: {((end_time - start_time).microseconds / 1000) :.2f}ms')
 
-    @commands.group(hidden=True)
+    @commands.group(name='extension', aliases=['ext'], hidden=True)
     @commands.is_owner()
-    async def ext(self, ctx: Context):
+    async def extension(self, ctx: Context):
         """Manage extensions."""
         pass
 
-    @ext.command(name='load')
-    async def ext_load(self, ctx: Context, *, package: str):
+    @extension.command(name='load')
+    async def extension_load(self, ctx: Context, *, package: str):
         """
         Loads an extension.
         """
@@ -43,8 +43,8 @@ class Meta(commands.Cog):
         else:
             await ctx.send(':ok_hand:')
 
-    @ext.command(name='unload')
-    async def ext_unload(self, ctx: Context, *, package: str):
+    @extension.command(name='unload')
+    async def extension_unload(self, ctx: Context, *, package: str):
         """
         Unloads an extension.
         """
@@ -55,8 +55,8 @@ class Meta(commands.Cog):
         else:
             await ctx.send(':ok_hand:')
 
-    @ext.command(name='reload')
-    async def ext_reload(self, ctx: Context, *, package: str):
+    @extension.command(name='reload')
+    async def extension_reload(self, ctx: Context, *, package: str):
         """
         Reloads an extension.
         """
@@ -67,8 +67,8 @@ class Meta(commands.Cog):
         else:
             await ctx.send(':ok_hand:')
 
-    @ext.command(name='reloadall')
-    async def ext_reload_all(self, ctx: Context):
+    @extension.command(name='reloadall')
+    async def extension_reload_all(self, ctx: Context):
         """
         Reloads all extensions.
         """
@@ -87,17 +87,6 @@ class Meta(commands.Cog):
         await ctx.send('\n'.join(
             f'{':white_check_mark:' if status else ':x:'}: `{package}`'
             for status, package in statuses))
-
-    @commands.command()
-    async def synctree(self, ctx: Context):
-        """
-        Resynchronizes the application command tree.
-        """
-
-        async with ctx.typing():
-            await ctx.bot.tree.sync()
-
-        await ctx.send(':ok_hand:')
 
 
 async def setup(bot: BlopBot):
