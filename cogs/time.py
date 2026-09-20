@@ -16,18 +16,19 @@ class Time(commands.Cog):
     def __init__(self, bot: BlopBot):
         self.bot = bot
 
-        self.context_commands = [
+        self.context_menus = [
             app_commands.ContextMenu(
                 name='Get local time',
                 callback=self.time_context_menu_callback
             )
         ]
 
-        for command in self.context_commands:
+    async def cog_load(self):
+        for command in self.context_menus:
             self.bot.tree.add_command(command)
 
     async def cog_unload(self):
-        for command in self.context_commands:
+        for command in self.context_menus:
             self.bot.tree.remove_command(command.name, type=command.type)
 
     @commands.command()
