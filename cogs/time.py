@@ -50,7 +50,7 @@ class Time(commands.Cog):
 
         settings = await ctx.bot.db.get_user_settings(ctx.author)
         settings['tz_key'] = tz.key
-        await ctx.bot.db.set_user_settings(settings)
+        await ctx.bot.db.save_user_settings(settings)
 
         # TODO better timezone name?
         await ctx.send(f'Your timezone has been set to `{tz}`.')

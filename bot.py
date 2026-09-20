@@ -5,7 +5,7 @@ import discord
 from discord.ext import commands
 
 from utils.context import Context
-from utils.database import DatabaseHelper
+from utils.database import Database
 
 log = logging.getLogger('BlopBot')
 
@@ -24,9 +24,9 @@ def _prefix_callable(bot: BlopBot, msg: discord.Message):
 
 class BlopBot(commands.Bot):
     bot_app_info: discord.AppInfo
-    _db: DatabaseHelper | None
+    _db: Database
 
-    def __init__(self):
+    def __init__(self, db: Database):
         allowed_mentions = discord.AllowedMentions(roles=False, everyone=False, users=True)
         _intents = discord.Intents(
             guilds=True,
@@ -45,12 +45,9 @@ class BlopBot(commands.Bot):
             intents=_intents
         )
 
-        self._db = None
+        self._db = db
 
     async def setup_hook(self) -> None:
-        if self._db is None:
-            raise RuntimeError('db was not set')
-
         self.bot_app_info = await self.application_info()
         self.owner_id = self.bot_app_info.owner.id
 
@@ -67,18 +64,8 @@ class BlopBot(commands.Bot):
         return self.bot_app_info.owner
 
     @property
-    def db(self) -> DatabaseHelper:
-        if self._db is None:
-            raise RuntimeError('db was not set')
-
+    def db(self) -> Database:
         return self._db
-
-    @db.setter
-    def db(self, db: DatabaseHelper):
-        if self._db is not None:
-            raise RuntimeError('db can only be set once')
-
-        self._db = db
 
     async def on_command_error(self, ctx: commands.Context, error: commands.CommandError) -> None:
         if isinstance(error, commands.NoPrivateMessage):
