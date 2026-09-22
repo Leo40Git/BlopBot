@@ -12,7 +12,7 @@ log = logging.getLogger('BlopBot')
 initial_extensions = [
     'cogs.meta',
     'cogs.time',
-    'cogs.reminder',
+    'cogs.schedule',
     'cogs.fun'
 ]
 

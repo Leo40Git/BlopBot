@@ -1,5 +1,4 @@
 from datetime import datetime
-from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from discord import User, Member, AllowedMentions, app_commands
 from discord.ext import commands
@@ -72,21 +71,11 @@ class Time(commands.Cog):
             The target user.
 
         """
-
-        settings = await ctx.bot.db.get_user_settings(target)
-        tz_key = settings.get('tz_key')
-
-        if tz_key is None:
+        tz = await ctx.bot.db.get_user_timezone(target)
+        if tz is None:
             await ctx.send(f'{target.mention} has not specified their timezone. '
-                           f'This can be done with the !settimezone command.',
+                           f'This can be done with the {ctx.prefix}settimezone command.',
                            allowed_mentions=AllowedMentions.none())
-            return
-
-        tz: ZoneInfo
-        try:
-            tz = ZoneInfo(tz_key)
-        except ValueError, ZoneInfoNotFoundError:
-            # TODO
             return
 
         now = datetime.now(tz)
@@ -98,23 +87,12 @@ class Time(commands.Cog):
             interaction: Interaction,
             target: Member | User
     ):
-        settings = await interaction.client.db.get_user_settings(target)
-        tz_key = settings.get('tz_key')
-
-        # this is... very much reachable? pycharmpls
-        # noinspection unreachable-code
-        if tz_key is None:
+        tz = await self.bot.db.get_user_timezone(target)
+        if tz is None:
             await interaction.response.send_message(
                 f'{target.mention} has not specified their timezone. '
                 f'This can be done with the !settimezone command.',
                 ephemeral=True)
-            return
-
-        tz: ZoneInfo
-        try:
-            tz = ZoneInfo(tz_key)
-        except ValueError, ZoneInfoNotFoundError:
-            # TODO
             return
 
         now = datetime.now(tz)
