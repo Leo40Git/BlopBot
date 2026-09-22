@@ -23,10 +23,11 @@ class Database(AsyncContextManager):
         await self._client.close()
 
     async def get_user_settings(self, user: discord.User | discord.Member) -> UserSettings:
+        _id = Int64(user.id)
         c: AsyncCollection[UserSettings] = self.mongo['user-settings']
-        result = await c.find_one({'_id': user.id})
+        result = await c.find_one({'_id': _id})
         if result is None:
-            result = UserSettings(_id=Int64(user.id))
+            result = UserSettings(_id=_id)
         return result
 
     async def save_user_settings(self, entity: UserSettings):

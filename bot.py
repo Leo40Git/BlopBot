@@ -19,7 +19,7 @@ initial_extensions = [
 
 # noinspection unused-parameter
 def _prefix_callable(bot: BlopBot, msg: discord.Message):
-    return ['!', 'b!', 'B!']
+    return [f'<@{bot.user.id}> ', '!']
 
 
 class BlopBot(commands.Bot):

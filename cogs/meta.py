@@ -33,9 +33,7 @@ class Meta(commands.Cog):
 
     @extension.command(name='load')
     async def extension_load(self, ctx: Context, *, package: str):
-        """
-        Loads an extension.
-        """
+        """Loads an extension."""
         try:
             await ctx.bot.load_extension(package)
         except commands.ExtensionError as e:
@@ -45,9 +43,7 @@ class Meta(commands.Cog):
 
     @extension.command(name='unload')
     async def extension_unload(self, ctx: Context, *, package: str):
-        """
-        Unloads an extension.
-        """
+        """Unloads an extension."""
         try:
             await ctx.bot.unload_extension(package)
         except commands.ExtensionError as e:
@@ -57,9 +53,7 @@ class Meta(commands.Cog):
 
     @extension.command(name='reload')
     async def extension_reload(self, ctx: Context, *, package: str):
-        """
-        Reloads an extension.
-        """
+        """Reloads an extension."""
         try:
             await ctx.bot.reload_extension(package)
         except commands.ExtensionError as e:
@@ -69,9 +63,7 @@ class Meta(commands.Cog):
 
     @extension.command(name='reloadall')
     async def extension_reload_all(self, ctx: Context):
-        """
-        Reloads all extensions.
-        """
+        """Reloads all extensions."""
         packages = list(ctx.bot.extensions.keys())
         statuses: list[tuple[bool, str]] = []
 
