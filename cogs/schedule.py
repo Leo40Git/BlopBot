@@ -142,27 +142,6 @@ class Schedule(commands.Cog):
 
             self._dispatch_task = self.bot.loop.create_task(self._dispatch_scheduled_events())
 
-    @commands.command()
-    async def scheduletest(self, ctx: Context):
-        tz: tzinfo = await self.bot.prefs_cog.get_user_timezone(ctx.author) or timezone.utc
-        now = datetime.now(tz)
-        in_2mins = now + timedelta(minutes=2)
-        se = await self.create_scheduled_event(
-            'test_event', in_2mins, Int64(ctx.channel.id),
-            created_at=now
-        )
-        await ctx.send(f'what the hell, sure (`{se['_id']}`)')
-
-    @commands.Cog.listener()
-    async def on_test_event(self, event: ScheduledEvent):
-        channel_id = int(event['args'][0])
-
-        try:
-            channel = self.bot.get_channel(channel_id) or (await self.bot.fetch_channel(channel_id))
-            await channel.send("test event fired holy shit")
-        except discord.HTTPException:
-            return
-
 
 async def setup(bot: BlopBot):
     await bot.add_cog(Schedule(bot))
