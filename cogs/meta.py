@@ -1,9 +1,13 @@
+import logging
 from datetime import datetime
 
 from discord.ext import commands
 
 from bot import BlopBot
 from utils.context import Context
+
+
+log = logging.getLogger('cogs.Meta')
 
 
 class Meta(commands.Cog):
@@ -70,8 +74,8 @@ class Meta(commands.Cog):
         for package in packages:
             try:
                 await ctx.bot.reload_extension(package)
-            except commands.ExtensionError:
-                # TODO log this somewhere
+            except commands.ExtensionError as e:
+                log.exception(f'Failed to reload extension "{package}"', exc_info=e)
                 statuses.append((False, package))
             else:
                 statuses.append((True, package))

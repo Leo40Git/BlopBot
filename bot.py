@@ -1,16 +1,22 @@
 import logging
-from typing import Union
+from typing import Union, TYPE_CHECKING
 
 import discord
 from discord.ext import commands
 
+
+from database import Database
 from utils.context import Context
-from utils.database import Database
+
+if TYPE_CHECKING:
+    from cogs.prefs import Prefs
+    from cogs.schedule import Schedule
 
 log = logging.getLogger('BlopBot')
 
 initial_extensions = [
     'cogs.meta',
+    'cogs.prefs',
     'cogs.time',
     'cogs.schedule',
     'cogs.fun'
@@ -82,10 +88,18 @@ class BlopBot(commands.Bot):
             await ctx.send(str(error))
 
     async def get_context(
-        self,
-        origin: Union[discord.Message, discord.Interaction],
-        /,
-        *,
-        cls=Context,
+            self,
+            origin: Union[discord.Message, discord.Interaction],
+            /,
+            *,
+            cls=Context,
     ) -> Context:
         return await super().get_context(origin, cls=cls)
+
+    @property
+    def prefs_cog(self) -> Prefs:
+        return self.get_cog('Prefs')    # type: ignore
+
+    @property
+    def schedule_cog(self) -> Schedule:
+        return self.get_cog('Schedule') # type: ignore

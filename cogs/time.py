@@ -48,9 +48,11 @@ class Time(commands.Cog):
             The timezone to change to.
         """
 
-        settings = await ctx.bot.db.get_user_settings(ctx.author)
+        prefs = self.bot.prefs_cog
+
+        settings = await prefs.get_user_prefs(ctx.author)
         settings['tz_key'] = tz
-        await ctx.bot.db.save_user_settings(settings)
+        await prefs.save_user_prefs(settings)
 
         # TODO better timezone name?
         await ctx.send(f'Your timezone has been set to `{tz}`.')
@@ -71,7 +73,7 @@ class Time(commands.Cog):
             The target user.
 
         """
-        tz = await ctx.bot.db.get_user_timezone(target)
+        tz = await self.bot.prefs_cog.get_user_timezone(target)
         if tz is None:
             await ctx.send(f'{target.mention} has not specified their timezone. '
                            f'This can be done with the {ctx.prefix}settimezone command.',
@@ -87,7 +89,7 @@ class Time(commands.Cog):
             interaction: Interaction,
             target: Member | User
     ):
-        tz = await self.bot.db.get_user_timezone(target)
+        tz = await self.bot.prefs_cog.get_user_timezone(target)
         if tz is None:
             await interaction.response.send_message(
                 f'{target.mention} has not specified their timezone. '

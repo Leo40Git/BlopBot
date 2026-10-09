@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from datetime import timezone, tzinfo, datetime, timedelta
 
 import discord
@@ -7,8 +8,11 @@ from discord.ext import commands
 from pymongo import errors
 
 from bot import BlopBot
+from database import ScheduledEvent
 from utils.context import Context
-from utils.database import ScheduledEvent
+
+
+log = logging.getLogger('cogs.Schedule')
 
 
 class Schedule(commands.Cog):
@@ -130,7 +134,9 @@ class Schedule(commands.Cog):
                 await self._invoke_scheduled_event(event)
         except asyncio.CancelledError:
             raise
-        except (OSError, discord.ConnectionClosed, errors.PyMongoError):
+        except (OSError, discord.ConnectionClosed, errors.PyMongoError) as e:
+            log.exception('Exception in dispatch scheduled events task', exc_info=e)
+
             if self._dispatch_task is not None:
                 self._dispatch_task.cancel()
 
@@ -138,12 +144,10 @@ class Schedule(commands.Cog):
 
     @commands.command()
     async def scheduletest(self, ctx: Context):
-        tz: tzinfo = await ctx.db.get_user_timezone(ctx.author) or timezone.utc
+        tz: tzinfo = await self.bot.prefs_cog.get_user_timezone(ctx.author) or timezone.utc
         now = datetime.now(tz)
         in_2mins = now + timedelta(minutes=2)
         se = await self.create_scheduled_event(
-            #name='test_event', created_at=now, triggers_at=in_2mins,
-            #channel=Int64(ctx.channel.id)
             'test_event', in_2mins, Int64(ctx.channel.id),
             created_at=now
         )

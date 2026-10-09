@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 import discord
 from discord.ext import commands
 
-from utils.database import Database
+from database import Database
 
 if TYPE_CHECKING:
     from bot import BlopBot

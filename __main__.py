@@ -5,10 +5,9 @@ from logging.handlers import RotatingFileHandler
 
 import discord
 from dotenv import dotenv_values
-from pymongo import AsyncMongoClient
 
 from bot import BlopBot
-from utils.database import Database
+from database import Database
 
 
 class RemoveNoise(logging.Filter):
